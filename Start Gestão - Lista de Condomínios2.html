@@ -1,0 +1,460 @@
+<html><head><base href="https://startcondominios.com/"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>START GESTÃO CONDOMINIAL</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+  }
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .header-title {
+    text-align: center;
+  }
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  h2 {
+    font-size: 1rem;
+    font-weight: normal;
+    margin: 5px 0 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+  .hero {
+    background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+    position: relative;
+    overflow-y: auto;
+  }
+  .hero::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: 120px;
+    width: 100%;
+  }
+  .condo-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding: 0 20px;
+  }
+  .condo-button, .add-condo-button {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .condo-button:hover, .add-condo-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+  }
+  .add-condo-button {
+    background-color: #28a745;
+    margin-top: 20px;
+  }
+  .add-condo-button:hover {
+    background-color: #218838;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    position: relative;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .modal-content h3 {
+    margin-top: 0;
+    color: #007bff;
+  }
+  .modal-content p {
+    margin: 10px 0;
+  }
+  .edit-delete {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+  .edit-delete button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+  .edit-delete button::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  .edit-delete button:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+  .edit-delete button:hover {
+    color: #007bff;
+  }
+  #addCondoForm, #editCondoForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #addCondoForm input, #editCondoForm input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  #addCondoForm button, #editCondoForm button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #addCondoForm button:hover, #editCondoForm button:hover {
+    background-color: #218838;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>START GESTÃO CONDOMINIAL</h1>
+      <h2>Lista de Condomínios</h2>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-content">
+      <div class="condo-list" id="condoList"></div>
+      <button id="addCondoBtn" class="add-condo-button">Adicionar Condomínio</button>
+    </div>
+  </div>
+
+  <div id="condoModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 id="condoName"></h3>
+      <p><strong>Endereço:</strong> <span id="condoAddress"></span></p>
+      <p><strong>CEP:</strong> <span id="condoCEP"></span></p>
+      <p><strong>CNPJ:</strong> <span id="condoCNPJ"></span></p>
+      <p><strong>Inscrição Estadual:</strong> <span id="condoIE"></span></p>
+      <p><strong>E-mail da Administração:</strong> <span id="condoEmail"></span></p>
+      <p><strong>Telefone da Portaria:</strong> <span id="condoPhone"></span></p>
+      <p><strong>Telefone do Encarregado:</strong> <span id="condoManagerPhone"></span></p>
+      <p><strong>Nome do Encarregado:</strong> <span id="condoManagerName"></span></p>
+      <p><strong>Número de Unidades:</strong> <span id="condoUnits"></span></p>
+      <div class="edit-delete">
+        <button id="editBtn" title="Editar">✏️</button>
+        <button id="deleteBtn" title="Excluir">🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="addCondoModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Adicionar Novo Condomínio</h3>
+      <form id="addCondoForm">
+        <input type="text" id="newCondoName" placeholder="Nome do Condomínio">
+        <input type="text" id="newCondoAddress" placeholder="Endereço">
+        <input type="text" id="newCondoCEP" placeholder="CEP">
+        <input type="text" id="newCondoCNPJ" placeholder="CNPJ">
+        <input type="text" id="newCondoIE" placeholder="Inscrição Estadual">
+        <input type="email" id="newCondoEmail" placeholder="E-mail da Administração">
+        <input type="tel" id="newCondoPhone" placeholder="Telefone da Portaria">
+        <input type="tel" id="newCondoManagerPhone" placeholder="Telefone do Encarregado">
+        <input type="text" id="newCondoManagerName" placeholder="Nome do Encarregado">
+        <input type="number" id="newCondoUnits" placeholder="Número de Unidades">
+        <button type="submit">Adicionar Condomínio</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="editCondoModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Editar Condomínio</h3>
+      <form id="editCondoForm">
+        <input type="text" id="editCondoName" placeholder="Nome do Condomínio" required>
+        <input type="text" id="editCondoAddress" placeholder="Endereço" required>
+        <input type="text" id="editCondoCEP" placeholder="CEP" required>
+        <input type="text" id="editCondoCNPJ" placeholder="CNPJ" required>
+        <input type="text" id="editCondoIE" placeholder="Inscrição Estadual" required>
+        <input type="email" id="editCondoEmail" placeholder="E-mail da Administração" required>
+        <input type="tel" id="editCondoPhone" placeholder="Telefone da Portaria" required>
+        <input type="tel" id="editCondoManagerPhone" placeholder="Telefone do Encarregado" required>
+        <input type="text" id="editCondoManagerName" placeholder="Nome do Encarregado" required>
+        <input type="number" id="editCondoUnits" placeholder="Número de Unidades" required>
+        <button type="submit">Salvar Alterações</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let condos = [
+      {
+        name: "Edifício Harmonia",
+        address: "Rua das Flores, 123",
+        cep: "01234-567",
+        cnpj: "12.345.678/0001-90",
+        ie: "123.456.789.000",
+        email: "admin@edificioharmonia.com",
+        phone: "(11) 3456-7890",
+        managerPhone: "(11) 98765-4321",
+        managerName: "João Silva",
+        units: 50
+      },
+      {
+        name: "Residencial Primavera",
+        address: "Av. das Árvores, 456",
+        cep: "04567-890",
+        cnpj: "98.765.432/0001-10",
+        ie: "987.654.321.000",
+        email: "admin@residencialprimavera.com",
+        phone: "(11) 2345-6789",
+        managerPhone: "(11) 97654-3210",
+        managerName: "Maria Oliveira",
+        units: 75
+      },
+      {
+        name: "Torre Vista Mar",
+        address: "Rua da Praia, 789",
+        cep: "09876-543",
+        cnpj: "23.456.789/0001-01",
+        ie: "234.567.890.000",
+        email: "admin@torrevistamar.com",
+        phone: "(13) 3456-7890",
+        managerPhone: "(13) 98765-4321",
+        managerName: "Pedro Santos",
+        units: 100
+      }
+    ];
+
+    const condoList = document.getElementById('condoList');
+    const modal = document.getElementById('condoModal');
+    const addCondoModal = document.getElementById('addCondoModal');
+    const editCondoModal = document.getElementById('editCondoModal');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const closeBtnAddCondo = document.getElementsByClassName('close')[1];
+    const closeBtnEditCondo = document.getElementsByClassName('close')[2];
+    const editBtn = document.getElementById('editBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const addCondoBtn = document.getElementById('addCondoBtn');
+    const addCondoForm = document.getElementById('addCondoForm');
+    const editCondoForm = document.getElementById('editCondoForm');
+
+    let currentCondoIndex = -1;
+
+    function renderCondoList() {
+      condoList.innerHTML = '';
+      condos.forEach((condo, index) => {
+        const button = document.createElement('button');
+        button.classList.add('condo-button');
+        button.textContent = condo.name;
+        button.addEventListener('click', () => openModal(condo, index));
+        condoList.appendChild(button);
+      });
+    }
+
+    renderCondoList();
+
+    function openModal(condo, index) {
+      currentCondoIndex = index;
+      document.getElementById('condoName').textContent = condo.name;
+      document.getElementById('condoAddress').textContent = condo.address;
+      document.getElementById('condoCEP').textContent = condo.cep;
+      document.getElementById('condoCNPJ').textContent = condo.cnpj;
+      document.getElementById('condoIE').textContent = condo.ie;
+      document.getElementById('condoEmail').textContent = condo.email;
+      document.getElementById('condoPhone').textContent = condo.phone;
+      document.getElementById('condoManagerPhone').textContent = condo.managerPhone;
+      document.getElementById('condoManagerName').textContent = condo.managerName;
+      document.getElementById('condoUnits').textContent = condo.units;
+      modal.style.display = "block";
+    }
+
+    function populateEditForm(condo) {
+      document.getElementById('editCondoName').value = condo.name;
+      document.getElementById('editCondoAddress').value = condo.address;
+      document.getElementById('editCondoCEP').value = condo.cep;
+      document.getElementById('editCondoCNPJ').value = condo.cnpj;
+      document.getElementById('editCondoIE').value = condo.ie;
+      document.getElementById('editCondoEmail').value = condo.email;
+      document.getElementById('editCondoPhone').value = condo.phone;
+      document.getElementById('editCondoManagerPhone').value = condo.managerPhone;
+      document.getElementById('editCondoManagerName').value = condo.managerName;
+      document.getElementById('editCondoUnits').value = condo.units;
+    }
+
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    closeBtnAddCondo.onclick = function() {
+      addCondoModal.style.display = "none";
+    }
+
+    closeBtnEditCondo.onclick = function() {
+      editCondoModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+      if (event.target == addCondoModal) {
+        addCondoModal.style.display = "none";
+      }
+      if (event.target == editCondoModal) {
+        editCondoModal.style.display = "none";
+      }
+    }
+
+    editBtn.onclick = function() {
+      if (currentCondoIndex !== -1) {
+        populateEditForm(condos[currentCondoIndex]);
+        modal.style.display = "none";
+        editCondoModal.style.display = "block";
+      }
+    }
+
+    deleteBtn.onclick = function() {
+      if (currentCondoIndex !== -1 && confirm('Tem certeza que deseja excluir este condomínio?')) {
+        condos.splice(currentCondoIndex, 1);
+        renderCondoList();
+        modal.style.display = "none";
+        currentCondoIndex = -1;
+      }
+    }
+
+    addCondoBtn.onclick = function() {
+      addCondoModal.style.display = "block";
+    }
+
+    addCondoForm.onsubmit = function(e) {
+      e.preventDefault();
+      const newCondo = {
+        name: document.getElementById('newCondoName').value || 'Sem nome',
+        address: document.getElementById('newCondoAddress').value || 'Sem endereço',
+        cep: document.getElementById('newCondoCEP').value || 'Sem CEP',
+        cnpj: document.getElementById('newCondoCNPJ').value || 'Sem CNPJ',
+        ie: document.getElementById('newCondoIE').value || 'Sem IE',
+        email: document.getElementById('newCondoEmail').value || 'Sem e-mail',
+        phone: document.getElementById('newCondoPhone').value || 'Sem telefone',
+        managerPhone: document.getElementById('newCondoManagerPhone').value || 'Sem telefone do encarregado',
+        managerName: document.getElementById('newCondoManagerName').value || 'Sem nome do encarregado',
+        units: parseInt(document.getElementById('newCondoUnits').value) || 0
+      };
+      condos.push(newCondo);
+      renderCondoList();
+      addCondoModal.style.display = "none";
+      addCondoForm.reset();
+    }
+
+    editCondoForm.onsubmit = function(e) {
+      e.preventDefault();
+      if (currentCondoIndex !== -1) {
+        condos[currentCondoIndex] = {
+          name: document.getElementById('editCondoName').value,
+          address: document.getElementById('editCondoAddress').value,
+          cep: document.getElementById('editCondoCEP').value,
+          cnpj: document.getElementById('editCondoCNPJ').value,
+          ie: document.getElementById('editCondoIE').value,
+          email: document.getElementById('editCondoEmail').value,
+          phone: document.getElementById('editCondoPhone').value,
+          managerPhone: document.getElementById('editCondoManagerPhone').value,
+          managerName: document.getElementById('editCondoManagerName').value,
+          units: parseInt(document.getElementById('editCondoUnits').value)
+        };
+        renderCondoList();
+        editCondoModal.style.display = "none";
+        openModal(condos[currentCondoIndex], currentCondoIndex);
+      }
+    }
+  </script>
+</body>
+</html>
